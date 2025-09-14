@@ -1,0 +1,155 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/comm :: comm-head}">
+  </head>
+  <body>
+	 <nav th:replace="~{fragments/comm :: navbar}"></nav>
+	 <div class="container my-2">
+	    <h4>제휴브랜드관리</h4>
+	    
+		<!-- 이벤트 등록  ------------------------------------>
+		<div class="mb-4">
+			<form th:object="${item}" th:action method="POST" enctype="multipart/form-data" onSubmit="return goSave();">			
+				  <div class="row mb-3">
+				    <label for="brandName" class="col-sm-2 col-form-label">브랜드 이름</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:errorclass="is-invalid" th:field="*{brandName}">
+				    </div>		
+				  </div>		  
+				  <div class="row mb-3">
+				    <label for="brandProduct" class="col-sm-2 col-form-label">제품 이름</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{brandProduct}">
+				    </div>
+				  </div>		  
+				  <div class="row mb-3">
+				    <label for="brandUrl" class="col-sm-2 col-form-label">브랜드 URL</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{brandUrl}">
+				    </div>
+				  </div>  		
+				  <fieldset class="row mb-3">
+				    <label for="attachFile" class="col-sm-2 col-form-label">브랜드 이미지</label>
+				    <div class="col-sm-10">
+						<input class="form-control" type="file" accept="image/*" th:field="*{attachFile}" >
+				    </div>
+				  </fieldset>		
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				  <button class="btn btn-secondary me-md-2" type="submit">브랜드 등록</button>
+				  <button class="btn btn-secondary" type="reset">등록 취소</button>
+				</div>		
+			</form>		
+		</div>	    
+		<!-- // 이벤트 등록 ----------------------------------->
+		
+		<hr />
+
+		<!-- 알파벳 버튼 ----------------------------------->
+		<div th:with="letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'">
+			<div class="btn-group btn-group-sm mb-1 " role="group" aria-label="Small button group"> 
+				<button type="button" class="btn btn-secondary" th:onclick="goStartBrand('ALL')">ALL</button>
+			    <button type="button" th:onclick="goStartBrand([[${#strings.substring(letters, num, num+1)}]])" 
+			    class="btn" 
+			    th:each="num : ${#numbers.sequence(0, 25)}" 
+			    th:text="${#strings.substring(letters, num, num+1)}"    
+			    th:disabled="${#strings.contains(startLetters, #strings.substring(letters, num, num+1))?false:true}" 
+			    th:classappend="${#strings.contains(startLetters, #strings.substring(letters, num, num+1))?'btn-secondary':'btn-outline-secondary'}"    
+			    >ALL</button>
+			</div>
+		</div>
+		<!-- // 알파벳 버튼 ----------------------------------->
+
+		<!-- 브랜드 목록 ----------------------------------->
+		<div class="card mb-0 mb-1">
+			<div class="row g-0 text-center">
+				<div class="col-md-2" ></div>
+				<div class="col-md-8">제조사/제품</div>
+				<div class="col-md-2">바로가기</div>
+			</div>
+		</div>
+		<div class="card mb-1"  th:each="item, itemStat : ${items}">
+		  <div class="row g-0">
+			    <div class="col-md-2"  th:if="${item.file}">
+			    <a th:href="${item.brandUrl}" target="_blank">
+			    	<img class="img-fluid rounded-start" th:src="@{|/admin/brand/image/${item.file.savedFileName}|}">
+			    </a>     
+			    </div>
+			    <div class="col-md-8">
+			      <div class="card-body">
+			        <h5 class="card-title" th:text="${item.brandName}">Brand</h5>
+			        <p class="card-text" th:text="${item.brandProduct}">Product</p>
+			      </div>
+			    </div>
+			    <div class="col-md-1 d-flex align-items-center">
+			    	<a class="btn btn-outline-secondary" th:href="${item.brandUrl}"  target="_blank">Go</a>
+			    </div>
+			    <div class="col-md-1 d-flex align-items-center">
+			    	<button class="btn btn-outline-secondary" th:onclick="goDelete([[${item.id}]]);">삭제</button>
+			    </div>    	
+			  </div>
+		</div>
+		<!-- // 브랜드 목록 ----------------------------------->	
+	</div>
+	
+    <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    
+    <script th:inline="javascript">
+      
+    	// 저장
+    	let goSave = function() {
+			
+			let brandName = document.getElementById('brandName').value;
+			let brandProduct = document.getElementById('brandProduct').value;
+			let brandUrl = document.getElementById('brandUrl').value;
+			let attachFile = document.getElementById('attachFile').value;
+			
+			if (brandName.trim() == '') {
+				alert("브랜드이름을 입력하세요.");
+				document.getElementById('brandName').focus();
+				return false;
+			}
+			
+			if (brandProduct.trim() == '') {
+				alert("제품이름을 입력하세요.");
+				document.getElementById('brandProduct').focus();
+				return false;
+			}
+			
+			if (brandUrl.trim() == '') {
+				alert("브랜드URL을 입력하세요.");
+				document.getElementById('brandUrl').focus();
+				return false;
+			} else {				
+				if (brandUrl.trim().substring(0, 4) != 'http') {
+					alert("브랜드 URL은 http로 시작해야합니다.");
+					document.getElementById('brandUrl').value = "";
+					document.getElementById('brandUrl').focus();
+					return false;
+				}
+			}
+			
+			if (attachFile.trim() == '') {
+				alert("브랜드 이미지를 선택하세요.");
+				document.getElementById('attachFile').focus();
+				return false;
+			} 
+			return true;
+    		
+    	}
+ 
+      	// 알파벳 버튼 클릭 조회
+    	let goStartBrand = function(p) {
+    		location.href = "/admin/brand/list?brand="+p;
+    	}    
+    
+    	// 삭제
+    	let goDelete = function(id) { 		
+    		let conf = confirm("해당 브랜드를 삭제합니까?");  		
+    		if (conf) {
+    			location.href = "/admin/brand/"+ id +"/delete";
+    		} 		  		
+    	}
+    </script>    
+  
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/comm :: comm-head}">
+  
+  </head>
+  <body>
+  
+	 <nav th:replace="~{fragments/comm :: navbar}"></nav>
+ 
+	 <div class="container my-2">
+	    
+	    <h4>관리자 첫페이지</h4>
+	    
+
+		
+		<a type="button" th:href="@{/admin2/items/addForm}" class="btn btn-primary">관리자 첫페이지</a>
+		<button type="button" class="btn btn-outline-secondary">Secondary</button>
+	
+	</div>
+	
+    <script th:replace="~{fragments/comm :: bottom-script}"></script>
+  
+  </body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/comm :: comm-head}">
+  </head>
+  <body>
+	 <nav th:replace="~{fragments/comm :: navbar}"></nav>
+	 <div class="container my-2">
+	    
+	    <h4>견적의뢰관리</h4>
+	    
+	    <table class="table">
+		  <thead>
+		    <tr>
+		      <th scope="col">ID</th>
+		      <th scope="col">의뢰제목</th>
+		      <th scope="col">요청일시</th>
+		      <th scope="col"></th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="item, itemStat : ${items}">
+		      <th scope="row" th:text="${item.id}">1</th>
+		      <td>
+		      	<div th:text="${item.title}" class="text-truncate" style="display: inline-block; width: 300px;">의뢰내용제목</div>
+		      </td>
+		      <td th:text="${#dates.format(item.regAt, 'yyyy-MM-dd HH:mm:ss')}">2025-12-12 00-00-00</td>
+		      <td>
+				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" th:onclick="goDetail([[${item.id}]]);">
+				  상세보기
+				</button>
+		      </td>
+		    </tr>	   
+		  </tbody>
+		</table>
+
+	</div>
+		
+	<!-- 상세보기 Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+	    <div class="modal-content">
+	      <div class="modal-header bg-dark-subtle">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">견적의뢰 상세보기</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+
+	      <div class="mx-2">제목</div>
+	      <div class="modal-body border border-secondary rounded-2 m-2 p-2" id="title">
+	      </div>
+	      <div class="mx-2">내용</div>
+	      <div class="modal-body border border-secondary rounded-2 m-2 p-2" id="con">
+			<p>데이타가 존재하지 않습니다.</p>
+	      </div>
+	      <div class="mx-2">
+	      	<p>이름 : <sapn id="name">홍길동</sapn> | 휴대폰 : <sapn id="mobile">01011112222</sapn> | 이메일 : <sapn id="email">test@gmail.com</sapn> | 요청일시 : <sapn id="reg_at">2025-12-12 00:00:00</sapn></p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- // Modal -->	
+	
+    <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script th:inline="javascript">
+    
+    	let titleElement = document.getElementById('title');
+    	let conElement = document.getElementById('con');  	
+    	let nameElement = document.getElementById('name');
+    	let mobileElement = document.getElementById('mobile');
+    	let emailElement = document.getElementById('email');
+    	let regAtElement = document.getElementById('reg_at');
+    
+    	// 상세보기
+    	let goDetail = function(id) {
+    				    	
+	    	axios
+	    		.get('/api/admin/price/'+ id +'/detail')
+	    		.then(res => {
+	    			    		
+	    			if(res.data.title == undefined) {
+						console.log('데이타가 존재하지 않습니다.');
+	    			} else {	    								
+	    				titleElement.innerText = res.data.title;
+	    				conElement.innerText = res.data.contents;	    				
+	    				nameElement.innerText = res.data.name;
+	    				mobileElement.innerText = res.data.mobile;
+	    				emailElement.innerText = res.data.email;
+	    				regAtElement.innerText = res.data.regAt;					    						
+	    			}
+	    		})
+	    		.catch(err => {
+	    			console.log(err);
+	    		})    		    		
+    	}
+    	
+    </script>
+  
+  </body>
+</html>

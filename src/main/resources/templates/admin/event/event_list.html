@@ -1,0 +1,122 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/comm :: comm-head}">
+  
+  </head>
+  <body>
+  
+	 <nav th:replace="~{fragments/comm :: navbar}"></nav>
+ 
+	 <div class="container my-2">
+	    
+	    <h4>이벤트 관리</h4>
+
+		<!-- 이벤트 등록  ------------------------------------>
+		<div class="mb-4">
+		<form th:object="${item}" th:action method="POST" enctype="multipart/form-data" onSubmit="return goSave();">
+		  <div class="row mb-3">
+		    <label for="title" class="col-sm-2 col-form-label">제목</label>
+		    <div class="col-sm-10">
+		      <input type="text" maxlength=100 class="form-control" th:field="*{title}">
+		    </div>
+		  </div>
+		  <div class="row mb-3">
+		    <label for="contents" class="col-sm-2 col-form-label">내용</label>
+		    <div class="col-sm-10">
+		      <textarea class="form-control" th:field="*{contents}" rows="7"></textarea>
+		    </div>
+		  </div>
+		  <fieldset class="row mb-3">
+		    <label for="attachFile" class="col-sm-2 col-form-label">첨부파일</label>
+		    <div class="col-sm-10">
+				<input class="form-control" type="file" th:field="*{attachFile}" >
+		    </div>
+		  </fieldset>
+		
+		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+		  <button class="btn btn-secondary me-md-2" type="submit">이벤트 등록</button>
+		  <button class="btn btn-secondary" type="reset">등록 취소</button>
+		</div>
+		
+		</form>		
+		</div>	    
+		<!-- // 이벤트 등록 ----------------------------------->
+		
+		<hr />
+		
+		<!-- 이벤트 목록 ----------------------------------->	    
+		<div class="accordion accordion-flush" id="accordionFlushExample">
+		  <div class="accordion-item" th:each="item, itemStat : ${items}">
+		    <h2 class="accordion-header">
+		      <button class="accordion-button collapsed text-bg-secondary" type="button" data-bs-toggle="collapse" th:attr="data-bs-target=|#flush-collapse-${item.id}|, aria-controls=|#flush-collapse-${item.id}|"  aria-expanded="false">
+		       	<div>
+		       	<i class="bi bi-caret-right-square"></i><span th:text="${item.title}"></span>       	
+		       	</div>
+		      </button>
+		    </h2>
+		    <div   th:attr="id=|flush-collapse-${item.id}|" class="accordion-collapse collapse text-bg-light p-2" data-bs-parent="#accordionFlushExample">
+		      <div class="accordion-body">
+		      	<div>
+		      	<textarea class="form-control" rows="7" readonly th:text="${item.contents}"></textarea>
+		      	</div>
+		      	<hr />
+		      	<div th:if="${item.file}">      		
+		      		첨부파일 : <a th:href="|/admin/attach/${item.id}|" th:text="${item.file.orgFileName}"></a> 		
+		      	</div>
+		      	<div>
+			    	등록일시 : <span th:text="${#dates.format(item.regAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+			    </div>	    
+		    
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				 <!-- 
+				  <a th:href="|/admin/event/${item.id}/delete|" class="btn btn btn-outline-secondary">삭제</a>
+				  -->
+				  <button class="btn btn btn-outline-secondary" th:onclick="goDelete([[${item.id}]]);">삭제</button>	  
+				</div>    
+		    </div>
+		  </div>
+		</div>	    
+		<!-- // 이벤트 목록 ----------------------------------->
+	</div>
+	
+    <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    
+    <script th:inline="javascript">
+    
+    	// 이벤트 저장
+    	let goSave = function() {
+			
+			let title = document.getElementById('title').value;
+			let contents = document.getElementById('contents').value;
+			
+			if (title.trim() == '') {
+				alert("제목을 입력하세요.");
+				document.getElementById('title').focus();
+				return false;
+			}
+			
+			if (contents.trim() == '') {
+				alert("내용을 입력하세요.");
+				document.getElementById('contents').focus();
+				return false;
+			}
+			
+			return true;
+    		
+    	}
+    
+    	// 이벤트 삭제
+    	let goDelete = function(id) {
+    		
+    		let conf = confirm("해당 이벤트를 삭제합니까?");
+    		
+    		if (conf) {
+    			location.href = "/admin/event/"+ id +"/delete";
+    		}
+    		  		
+    	}
+    
+    </script>
+  
+  </body>
+</html>
