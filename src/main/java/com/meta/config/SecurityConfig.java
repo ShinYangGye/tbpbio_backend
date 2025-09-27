@@ -44,6 +44,9 @@ public class SecurityConfig {
 			// 사용자 계정
 			.requestMatchers("/api/account/**").permitAll()
 			
+			.requestMatchers("/admin/**").permitAll()
+			.requestMatchers("/static/**").permitAll()
+			
 			// 포스트
 			// .requestMatchers("/api/post/list").permitAll()
 			// .requestMatchers("/api/post").hasRole("USER_BASIC")				

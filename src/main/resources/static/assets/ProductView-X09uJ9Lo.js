@@ -1,0 +1,1 @@
+import{_ as c,c as r,o as a,a as e,e as s}from"./index-DSG_4b1L.js";const l={};function t(o,x){return a(),r("div",null,[...x[0]||(x[0]=[e("p",{class:"h3 d-flex"},[e("i",{class:"bi bi-check-square-fill"}),s("  제품정보")],-1),e("hr",null,null,-1),s(" xxxxxxxxxxxxxxx ",-1)])])}const i=c(l,[["render",t]]);export{i as default};

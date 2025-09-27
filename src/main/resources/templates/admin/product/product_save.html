@@ -9,16 +9,130 @@
  
 	 <div class="container my-2">
 	    
-	    <h4>상품관리</h4>
-	    
-
-		
-		<a type="button" th:href="@{/admin2/items/addForm}" class="btn btn-primary">상품등록</a>
-		<button type="button" class="btn btn-outline-secondary">Secondary</button>
-	
+	    <h4>제품관리 - 제품등록</h4>		        
+<!-- 
+		<div th:text="${param.mainId}"></div>
+		<div th:text="${param.mainName}"></div>		
+		<div th:text="${param.subId}"></div>
+		<div th:text="${param.subName}"></div>
+-->
+		<div><span class="h5" th:text="${param.mainName}"></span> - <span class="h5" th:text="${param.subName}"></span></div>
+		<!-- 상품 등록  ------------------------------------>
+		<div class="mb-4">
+			<form th:object="${item}" th:action method="POST" enctype="multipart/form-data" onSubmit="return goSave();">	
+				<input type="hidden" th:field="*{menuMainId}">
+				<input type="hidden" th:field="*{menuSubId}">		
+				  <div class="row mb-3">
+				    <label for="productName" class="col-sm-2 col-form-label">제품 이름</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{productName}">
+				    </div>		
+				  </div>		  
+				  <div class="row mb-3">
+				    <label for="productUse" class="col-sm-2 col-form-label">제품 용도</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{productUse}">
+				    </div>
+				  </div>		  
+				  <div class="row mb-3">
+				    <label for="productBrand" class="col-sm-2 col-form-label">제품 브랜드</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{productBrand}">
+				    </div>
+				  </div>				  
+				  <div class="row mb-3">
+				    <label for="productContents" class="col-sm-2 col-form-label">제품개요</label>
+				    <div class="col-sm-10">
+					    <div class="col-sm-10">
+					      <textarea class="form-control" th:field="*{productContents}" rows="4"></textarea>
+					    </div>				      				      
+				    </div>
+				  </div>  		
+				  <fieldset class="row mb-3">
+				    <label for="productDocs" class="col-sm-2 col-form-label">제품 자료</label>
+				    <div class="col-sm-10">
+						<input class="form-control" type="file" multiple="multiple" th:field="*{productDocs}" >
+				    </div>
+				  </fieldset>
+				  <fieldset class="row mb-3">
+				    <label for="mainImg" class="col-sm-2 col-form-label">제품 대표 이미지</label>
+				    <div class="col-sm-10">
+						<input class="form-control" type="file" accept="image/*" th:field="*{mainImg}" >
+				    </div>
+				  </fieldset>		
+				  <fieldset class="row mb-3">
+				    <label for="subImg" class="col-sm-2 col-form-label">제품 기타 이미지</label>
+				    <div class="col-sm-10">
+						<input class="form-control" type="file" multiple="multiple" accept="image/*" th:field="*{subImg}" >
+				    </div>
+				  </fieldset>
+				  <fieldset class="row mb-3">
+				    <label for="productUseImg" class="col-sm-2 col-form-label">제품특징 이미지</label>
+				    <div class="col-sm-10">
+						<input class="form-control" type="file" accept="image/*" th:field="*{productUseImg}" >
+				    </div>
+				  </fieldset>
+				  <fieldset class="row mb-3">
+				    <label for="productSpecImg" class="col-sm-2 col-form-label">제품사양 이미지</label>
+				    <div class="col-sm-10">
+						<input class="form-control" type="file" accept="image/*" th:field="*{productSpecImg}" >
+				    </div>
+				  </fieldset>
+				  
+				  
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				  <button class="btn btn-secondary me-md-2" type="submit">제품 등록 저장</button>
+				  <button class="btn btn-secondary" type="reset">등록 취소</button>
+				</div>		
+			</form>		
+		</div>	    
+		<!-- // 상품 등록 ----------------------------------->		
 	</div>
 	
     <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    
+    <script th:inline="javascript">
+    	let goSave = function() {
+    		
+    		let productName = document.getElementById('productName').value;
+    		let productUse = document.getElementById('productUse').value;
+    		let productBrand = document.getElementById('productBrand').value;
+    		let productContents = document.getElementById('productContents').value;
+    		let mainImg = document.getElementById('mainImg').value;
+    		
+    		if (productName.trim() == '') {
+				alert("제품이름을 입력하세요.");
+				document.getElementById('productName').focus();
+				return false;
+			}
+			
+			if (productUse.trim() == '') {
+				alert("제품용도를 입력하세요.");
+				document.getElementById('productUse').focus();
+				return false;
+			}
+			
+			if (productBrand.trim() == '') {
+				alert("제품브랜드를 입력하세요.");
+				document.getElementById('productBrand').focus();
+				return false;
+			}
+			
+			if (productContents.trim() == '') {
+				alert("제품개요를 입력하세요.");
+				document.getElementById('productContents').focus();
+				return false;
+			}
+			
+			if (mainImg.trim() == '') {
+				alert("제품 대표이미지를 선택하세요.");
+				document.getElementById('mainImg').focus();
+				return false;
+			}
+						
+    		return true;
+    	}
+    </script>
   
   </body>
 </html>

@@ -18,17 +18,22 @@ public class AdminController {
 	}
 	
 	
-	@GetMapping({"/menu/list"})
-	public String menuList() {		
-		return "admin/menu/menu_list";
-	}
-	
+	/*
 	@GetMapping({"/product/list"})
 	public String productList() {		
 		return "admin/product/product_list";
 	}
 	
-	/*
+	
+	@GetMapping({"/menu/list"})
+	public String menuList() {		
+		return "admin/menu/menu_list";
+	}
+	
+	
+
+	
+	
 	@GetMapping({"/brand/list"})
 	public String brandList() {		
 		return "admin/brand/brand_list";

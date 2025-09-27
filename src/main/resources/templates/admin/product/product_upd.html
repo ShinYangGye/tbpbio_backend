@@ -1,0 +1,185 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/comm :: comm-head}">
+  
+  </head>
+  <body>
+  
+	 <nav th:replace="~{fragments/comm :: navbar}"></nav>
+ 
+	 <div class="container my-2">
+	    
+	    <h4>제품관리 - 제품수정</h4>		        
+
+		<!-- 상품 등록  ------------------------------------>
+		
+		
+				
+		<div class="mb-4">
+			
+			<form th:object="${item}" th:action method="POST" enctype="multipart/form-data" onSubmit="return goSave();">	
+			
+			
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+			  <button class="btn btn-secondary me-md-2" type="submit">제품 수정 저장</button>
+			  <button class="btn btn-secondary" type="reset">수정 취소</button>
+			  <a class="btn btn-secondary" th:href="@{/admin/product/delete(mainId=${item.menuMainId}, subId=${item.menuSubId}, productId=${param.productId})}">제품삭제</a>
+			</div>
+		
+		<hr />
+			
+					<input type="hidden" th:field="*{productId}">	
+				  <div class="row mb-3">
+				    <label for="productName" class="col-sm-2 col-form-label">제품 이름</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{productName}">
+				    </div>		
+				  </div>		  
+				  <div class="row mb-3">
+				    <label for="productUse" class="col-sm-2 col-form-label">제품 용도</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{productUse}">
+				    </div>
+				  </div>		  
+				  <div class="row mb-3">
+				    <label for="productBrand" class="col-sm-2 col-form-label">제품 브랜드</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{productBrand}">
+				    </div>
+				  </div>				  
+				  
+				  <div class="row mb-3">
+				    <label for="productContents" class="col-sm-2 col-form-label">제품개요</label>
+				    <div class="col-sm-10">
+					    <div class="col-sm-10">
+					      <textarea class="form-control" th:field="*{productContents}" rows="4"></textarea>
+					    </div>				      				      
+				    </div>
+				  </div>  	
+				  
+				  <hr />	
+				  
+				  <fieldset class="row mb-3">
+				    <label for="productDocs" class="col-sm-2 col-form-label">제품 자료</label>
+				    <div class="col-sm-7">
+					    
+						  <div class="col" th:each="file : ${item.files}"  th:if="${file.kind} == 'doc'">
+						        <li>
+						        	<a th:href="|/api/product/attach/${file.id}|" th:text="${file.orgFileName}"></a>
+						        	<button class="btn btn-sm btn-secondary" type="button" th:onclick="deleteFile([[${file.id}]]);">삭제</button>
+						        </li>						      
+						  </div>				   
+					   					    		    
+				    </div>
+				    <div class="col-sm-3">
+						<input class="form-control" type="file" multiple="multiple" th:field="*{productDocs}" >
+				    </div>
+				  </fieldset>				  
+				  <hr />	
+				  <fieldset class="row mb-3">
+				    <label for="mainImg" class="col-sm-2 col-form-label">제품 대표 이미지</label>
+				    <div class="col-sm-7">
+
+					    
+						<div class="row row-cols-1 row-cols-md-4 g-1">
+						  <div class="col" th:each="file : ${item.files}"  th:if="${file.kind} == 'main'">
+						    <div class="card h-100">     
+						      <div class="card-body p-1">
+						        <img th:src="@{|/admin/product/image/${file.savedFileName}|}" class="card-img-top">
+						      </div>
+						    </div>
+						  </div>
+						</div> 					    
+					    
+					    
+				    </div>
+				    <div class="col-sm-3">
+						<input class="form-control" type="file" accept="image/*" th:field="*{mainImg}" >
+				    </div>
+				  </fieldset>	
+				  <hr />	
+				  <fieldset class="row mb-3">
+				    <label for="subImg" class="col-sm-2 col-form-label">제품 기타 이미지</label>
+				    <div class="col-sm-7">
+					    
+						<div class="row row-cols-1 row-cols-md-4 g-1">
+						  <div class="col" th:each="file : ${item.files}"  th:if="${file.kind} == 'sub'">
+						    <div class="card h-100">     
+						      <div class="card-body p-1">
+						        <img th:src="@{|/admin/product/image/${file.savedFileName}|}" class="card-img-top">
+						      </div>
+						      <div class="card-footer text-end">
+						        <small class="text-body-secondary"><button class="btn btn-sm btn-secondary" type="button" th:onclick="deleteFile([[${file.id}]]);">삭제</button></small>
+						      </div>
+						    </div>
+						  </div>
+						</div> 					   
+					   					    		    
+				    </div>
+				    <div class="col-sm-3">
+						<input class="form-control" type="file" multiple="multiple" accept="image/*" th:field="*{subImg}" >
+				    </div>
+				  </fieldset>
+					<hr />
+				  <fieldset class="row mb-3">
+				    <label for="productUseImg" class="col-sm-2 col-form-label">제품 특징 이미지</label>
+				    <div class="col-sm-7">
+				    	<div th:each="file : ${item.files}"  th:if="${file.kind} == 'use'"  class="border m-1">
+					      <img th:src="@{|/admin/product/image/${file.savedFileName}|}" class="card-img-top">
+					    </div> 
+				    </div>
+				    <div class="col-sm-3">
+						<input class="form-control" type="file" accept="image/*" th:field="*{productUseImg}" >
+				    </div>
+				  </fieldset>			
+				  <hr />
+				  <fieldset class="row mb-3">
+				    <label for="productSpecImg" class="col-sm-2 col-form-label">제품 사양 이미지</label>
+				    <div class="col-sm-7">
+				    	<div th:each="file : ${item.files}"  th:if="${file.kind} == 'spec'"  class="border m-1">
+					      <img th:src="@{|/admin/product/image/${file.savedFileName}|}" class="card-img-top">
+					    </div> 
+				    </div>
+				    <div class="col-sm-3">
+						<input class="form-control" type="file" accept="image/*" th:field="*{productSpecImg}" >
+				    </div>
+				  </fieldset>				  		  
+				  
+				  <hr />
+				  
+				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				  <button class="btn btn-secondary me-md-2" type="submit">제품 수정 저장</button>
+				  <button class="btn btn-secondary" type="reset">수정 취소</button>
+				  <a class="btn btn-secondary" th:href="@{/admin/product/delete(mainId=${item.menuMainId}, subId=${item.menuSubId}, productId=${param.productId})}">제품삭제</a>
+				</div>		
+			</form>		
+		</div>	    
+		<!-- // 상품 등록 ----------------------------------->		
+	</div>
+	
+    <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script th:inline="javascript">
+    	let goSave = function() {
+    		return true;
+    	}
+    	
+    	let deleteFile = function(id) {
+
+	    	axios
+	    		.get('/api/admin/product/file/'+ id +'/delete')
+	    		.then(res => {
+	    			    		
+	    			location.reload();
+	    		})
+	    		.catch(err => {
+	    			console.log(err);
+	    		})
+
+    		
+    	}
+    </script>
+  
+  </body>
+</html>

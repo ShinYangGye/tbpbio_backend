@@ -1,0 +1,172 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/comm :: comm-head}">
+  
+  </head>
+  <body>
+  
+	 <nav th:replace="~{fragments/comm :: navbar}"></nav>
+ 
+	 <div class="container my-2">
+	    
+	    <h4>제품관리</h4>
+
+		<!-- 메뉴 선택 ----------------------------------->	    
+		<div class="row">
+		  <div class="col col-5">
+			<select id="menu_main" class="form-select" th:onchange="setMenuSub();">
+				<option value="">전체보기</option>
+				<option th:each="item, itemStat : ${items}"  th:value="${item.id}" th:text="${item.menuName}">메인메뉴</option>
+			</select>      	
+			 
+		  </div>
+		  <div class="col col-4" id="divSub">
+			<select  class="form-select" id="menu_sub">
+				<option value="">전체보기</option>
+			</select> 
+		  </div>
+		  <div class="col  col-1">
+		    <button type="button" class="btn btn-secondary" onclick="goList();">조회</button>
+		  </div>
+		  <div class="col  col-2">
+			<a type="button" class="btn btn-secondary" onclick="goSaveForm();">제품등록</a>
+		  </div>  		    
+		</div>
+		<!-- // 메뉴 선택 ----------------------------------->		
+		
+		<hr />
+		
+		<!-- 상품 목록 ----------------------------------->
+		<div class="row row-cols-1 row-cols-md-4 g-2">
+		  <div class="col" th:each="prd, prdStat : ${prds}">
+		    <div class="card h-100">
+		    <div th:each="file : ${prd.files}">
+		      <img th:src="@{|/admin/product/image/${file.savedFileName}|}" class="card-img-top" th:if="${file.kind} == 'main'">
+		    </div>  
+		      <div class="card-body">
+		        <h5 class="card-title" tH:text="${prd.productName}">상품명</h5>
+		        <p class="card-text" tH:text="${prd.productBrand}">상품브랜드</p>
+		      </div>
+		      <div class="card-footer text-end">		        
+		        <button type="button" class="btn btn-secondary"  th:onclick="goUpdForm([[ ${prd.id} ]]);">상세보기</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- // 상품 목록 ----------------------------------->	
+	</div>
+
+    <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script th:inline="javascript">
+    	
+    	// 페이지 초기화
+		window.onload = function() {
+			
+			let mainId = /*[[${param.mainId}]]*/;
+			let subId = /*[[${param.subId}]]*/;
+			
+			let items = /*[[${items}]]*/;
+			
+			if (mainId == null) {
+				return;
+			}
+
+			let mainMenu = document.getElementById('menu_main');			
+			mainMenu.querySelector("option[value='"+ mainId +"']").selected = true;
+						
+			setMenuSub(items);
+			
+			if (subId != null) {				
+				let subMenu = document.getElementById('menu_sub');			
+				subMenu.querySelector("option[value='"+ subId +"']").selected = true;
+			}
+		
+		}
+		
+		// 조회
+		let goList = function() {
+
+			let mainMenu = document.getElementById('menu_main');
+			let subMenu = document.getElementById('menu_sub');
+						
+			let mainId = mainMenu.options[mainMenu.selectedIndex].value;
+			let subId = subMenu.options[subMenu.selectedIndex].value;
+						
+			location.href = "/admin/product/list?mainId=" + mainId + "&subId="+subId;
+		}
+		
+		// 저장 폼으로 이동
+		let goSaveForm = function() {
+		
+			let mainMenu = document.getElementById('menu_main');
+			let mainId = mainMenu.options[mainMenu.selectedIndex].value;
+			let mainName =  mainMenu.options[mainMenu.selectedIndex].text;
+			
+			let subMenu = document.getElementById('menu_sub');
+			let subId = subMenu.options[subMenu.selectedIndex].value;
+			let subName =  subMenu.options[subMenu.selectedIndex].text;
+			
+			if (mainId == '') {
+				alert("첫번째 메뉴를선택하세요");
+				return;
+			}
+			
+			if (subId == '') {
+				alert("두번째 메뉴를선택하세요");
+				return;
+			}
+			
+			location.href = "/admin/product/save?mainId=" + mainId + "&mainName="+mainName + "&subId="+subId+"&subName="+subName;
+		}
+		
+		// 수정 폼으로 이동
+		let goUpdForm = function(prdId) {	
+			let mainMenu = document.getElementById('menu_main');
+			let subMenu = document.getElementById('menu_sub');
+			
+			let mainId = mainMenu.options[mainMenu.selectedIndex].value;
+			let subId = subMenu.options[subMenu.selectedIndex].value;
+			
+			location.href = "/admin/product/upd?mainId=" + mainId + "&subId="+subId+"&productId=" + prdId;
+			// location.href = "/admin/product/upd?productId=" + prdId;
+		}		
+    	
+    	// 메뉴 선택박스 세팅
+    	let setMenuSub = function() {
+    	
+    		let items = /*[[${items}]]*/;
+    				
+    		let subHtml = "";
+    		let subSub = document.getElementById('divSub');
+    		
+			let selectedIndex = document.getElementById('menu_main').selectedIndex;
+			
+			if (selectedIndex == 0) {
+				subHtml = "<select id='menu_sub' class='form-select'>";
+    			subHtml = subHtml + "<option value=''>전체보기</option>";
+    			subHtml = subHtml + "</select>";
+    			subSub.innerHTML = subHtml;
+				return;
+			}
+			
+    		let arrSub = items[selectedIndex-1].menuSub;
+    		
+    		subHtml = "<select id='menu_sub' class='form-select'>";
+    		subHtml = subHtml + "<option value=''>전체보기</option>";
+    		
+     		for (i=0;i<arrSub.length;i++) {
+   		    	subHtml = subHtml + "<option value="+arrSub[i].id+">"+ arrSub[i].menuName +"</option>";
+   			}  		
+
+    		subHtml = subHtml + "</select>";
+			subSub.innerHTML = subHtml;			
+			subHtml = "";
+    	}
+    	
+    </script>
+  
+  </body>
+</html>

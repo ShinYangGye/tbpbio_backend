@@ -10,15 +10,179 @@
 	 <div class="container my-2">
 	    
 	    <h4>메뉴관리</h4>
-	    
-
+	    	    
+	    <!-- 메뉴 등록  ------------------------------------>
+		<div class="mb-4">
+		<form th:object="${item}" th:action method="POST" enctype="multipart/form-data" onSubmit="return goSave();">
+		  <div class="row mb-3">
+		    <label for="menuName" class="col-sm-2 col-form-label">메뉴명</label>
+		    <div class="col-sm-10">
+		      <input type="text" maxlength=100 class="form-control" th:field="*{menuName}">
+		    </div>
+		  </div>
+		  <div class="row mb-3">
+		    <label for="menuInfo" class="col-sm-2 col-form-label">메뉴정보</label>
+		    <div class="col-sm-10">
+		      <textarea class="form-control" th:field="*{menuInfo}" rows="4"></textarea>
+		    </div>
+		  </div>
+		  <fieldset class="row mb-3">
+		    <label for="attachFile" class="col-sm-2 col-form-label">메뉴이미지</label>
+		    <div class="col-sm-10">
+				<input class="form-control" type="file" accept="image/*" th:field="*{attachFile}" >
+		    </div>
+		  </fieldset>
 		
-		<a type="button" th:href="@{/admin2/items/addForm}" class="btn btn-primary">상품등록</a>
-		<button type="button" class="btn btn-outline-secondary">Secondary</button>
-	
+		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+		  <button class="btn btn-secondary me-md-2" type="submit">메뉴등록</button>
+		  <button class="btn btn-secondary" type="reset">등록 취소</button>
+		</div>
+		
+		</form>		
+		</div>	    
+		<!-- // 메뉴 등록 ----------------------------------->
+		
+		<hr />
+		
+		<!-- 메뉴 목록 ----------------------------------->
+		<table class="table">
+		  <thead class="table-dark">
+		    <tr>
+		      <th scope="col"  style="width: 18%;">메뉴명</th>
+		      <th scope="col"  style="width: 35%;">서브메뉴</th>
+		      <th scope="col">메뉴정보</th>
+		      <th scope="col">메뉴이미지</th>
+		      <th scope="col" style="width: 70px;">삭제</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="item, itemStat : ${items}">
+		      <th scope="row" th:text="${item.menuName}">메뉴명</th>
+		      <td>
+				<div class="input-group mb-1">
+				  <input type="text" class="form-control form-control-sm"  th:id="'submenu_'+${item.id}"  aria-describedby="button-addon2">
+				  <button class="btn btn-sm btn-outline-secondary" type="button" th:onclick="goSubmenu([[${item.id}]], [['submenu_'+${item.id}]]);">등록</button>
+				</div>
+				
+				<!-- 서브메뉴 목록 ----------------------------------->
+				<div>
+					
+				<div class="input-group">
+					<th:block  th:each="subItem, subItemStat : ${item.menuSub}">
+					  <input type="text"  th:value="${subItem.menuName}" class="form-control form-control-sm" style="width: 150px;" aria-describedby="button-addon2" disabled>
+					  <button class="btn btn-sm btn-outline-secondary" type="button" id="button-addon2"  th:onclick="goSubmenuDelete([[${subItem.id}]]);">X</button>
+					<th:block>
+				</div>
+						
+<!--/*				
+					<hr/>
+					
+					<ul class="list-group">
+					  <li class="list-group-item p-1"  th:each="subItem, subItemStat : ${item.menuSub}">
+					  	<span th:text="${subItem.menuName}"></span> 
+					  	<span><button class="btn bi bi-x-square p-0" type="button" th:onclick="goSubmenuDelete([[${subItem.id}]]);"></button></span>
+					  </li>
+					</ul>		
+ */-->					
+				</div>
+				<!-- //서브메뉴 목록 ----------------------------------->
+				
+		      </td>
+		      <td>
+		      	<textarea class="form-control" rows="6" readonly th:text="${item.menuInfo}"></textarea>
+		      </td>
+		      <td width="160px;">
+				<div  th:if="${item.file}">			    
+					<img class="img-fluid rounded-start" th:src="@{|/admin/menu/image/${item.file.savedFileName}|}" width="150">		     
+				</div>
+		      </td>
+		      <td>
+		      	<button class="btn btn-sm btn-outline-secondary" th:onclick="goDelete([[${item.id}]]);">삭제</button>
+		      </td>
+		    </tr>
+		  </tbody>
+		</table>
+		<!-- // 메뉴 목록 ----------------------------------->	
 	</div>
 	
     <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script th:inline="javascript">
+    	// 이벤트 저장
+    	let goSave = function() {
+			
+			let name = document.getElementById('menuName').value;
+			let info = document.getElementById('menuInfo').value;
+			let attachFile = document.getElementById('attachFile').value;
+			
+			if (name.trim() == '') {
+				alert("메뉴명을 입력하세요.");
+				document.getElementById('menuName').focus();
+				return false;
+			}
+			
+			if (info.trim() == '') {
+				alert("메뉴정보를 입력하세요.");
+				document.getElementById('menuInfo').focus();
+				return false;
+			}
+			
+			if (attachFile.trim() == '') {
+				alert("메뉴 이미지를 선택하세요.");
+				document.getElementById('attachFile').focus();
+				return false;
+			}
+			
+			return true;
+    		
+    	}    
+    	
+    	// 서브메뉴 등록
+    	let goSubmenu = function(itemId, inputId) {
+    	
+    		let submenu = document.getElementById(inputId).value;
+    		
+    		if (submenu.trim() == '') {
+    			alert("서브메뉴를 입력하세요.");
+    			document.getElementById(inputId).focus();
+    			return false;
+    		}
+    		
+			const params = {
+			  'menuOneId': itemId,
+			  'menuName': submenu,
+			};
+    		
+    			    	
+	    	axios
+	    		.post('/api/admin/menu/sub', params)
+	    		.then(res => {	    			
+	    			location.href = "/admin/menu/list";					
+	    		})
+	    		.catch(err => {
+	    			console.log(err);
+	    		})    		
+	    		   		
+    	}
+    	
+    	// 메인메뉴 삭제
+    	let goDelete = function(id) { 		
+    		let conf = confirm("해당 메뉴를 삭제합니까?");  		
+    		if (conf) {
+    			location.href = "/admin/menu/main/"+ id +"/delete";
+    		} 		  		
+    	}
+    	
+    	// 서브메뉴 삭제
+    	let goSubmenuDelete = function(id) { 		
+    		let conf = confirm("해당 서브메뉴를 삭제합니까?");  		
+    		if (conf) {
+    			location.href = "/admin/menu/sub/"+ id +"/delete";
+    		} 		  		
+    	}	
+    </script>
   
   </body>
 </html>
