@@ -23,12 +23,19 @@
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 			  <button class="btn btn-secondary me-md-2" type="submit">제품 수정 저장</button>
 			  <button class="btn btn-secondary" type="reset">수정 취소</button>
-			  <a class="btn btn-secondary" th:href="@{/admin/product/delete(mainId=${item.menuMainId}, subId=${item.menuSubId}, productId=${param.productId})}">제품삭제</a>
+			  <button type="button" class="btn btn-secondary" th:onclick="deleteProduct([[${item.menuMainId}]], [[${item.menuSubId}]], [[${param.productId}]]);">제품삭제</button>
+			  <!-- <a class="btn btn-secondary" th:href="@{/admin/product/delete(mainId=${item.menuMainId}, subId=${item.menuSubId}, productId=${param.productId})}">제품삭제</a> -->
 			</div>
 		
 		<hr />
 			
-					<input type="hidden" th:field="*{productId}">	
+	
+				<div class="row mb-3">
+				    <label for="productId" class="col-sm-2 col-form-label">제품관리 번호</label>
+				    <div class="col-sm-10">
+				      <input type="text" maxlength=100 class="form-control" th:field="*{productId}" readonly>
+				    </div>		
+				  </div>
 				  <div class="row mb-3">
 				    <label for="productName" class="col-sm-2 col-form-label">제품 이름</label>
 				    <div class="col-sm-10">
@@ -150,7 +157,8 @@
 				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 				  <button class="btn btn-secondary me-md-2" type="submit">제품 수정 저장</button>
 				  <button class="btn btn-secondary" type="reset">수정 취소</button>
-				  <a class="btn btn-secondary" th:href="@{/admin/product/delete(mainId=${item.menuMainId}, subId=${item.menuSubId}, productId=${param.productId})}">제품삭제</a>
+				  <button type="button" class="btn btn-secondary" th:onclick="deleteProduct([[${item.menuMainId}]], [[${item.menuSubId}]], [[${param.productId}]]);">제품삭제</button>
+				  <!-- <a class="btn btn-secondary" th:href="@{/admin/product/delete(mainId=${item.menuMainId}, subId=${item.menuSubId}, productId=${param.productId})}">제품삭제 xx</a>--->	
 				</div>		
 			</form>		
 		</div>	    
@@ -161,8 +169,30 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     
     <script th:inline="javascript">
+    	window.onload = function() {
+    		let upd = /*[[${param.upd}]]*/;
+    		let productId = /*[[${param.productId}]]*/;
+    		
+    		if (upd == 'U') {
+    			alert("수정이 완료되었습니다.");
+    			location.href = "/admin/product/upd?productId=" + productId;
+    		}
+    	}
+    
     	let goSave = function() {
     		return true;
+    	}
+    	
+    	let deleteProduct = function (mainId, subId, productId) {
+
+    		const conf = confirm("해당 제품을 삭제합니까?");
+    		if (!conf) {
+    			return;
+    		} else {
+    			// alert("/admin/product/delete?mainId="+mainId+"&subId="+subId+"&productId="+productId);
+    			location.href = "/admin/product/delete?mainId="+mainId+"&subId="+subId+"&productId="+productId;
+    		}
+    		
     	}
     	
     	let deleteFile = function(id) {

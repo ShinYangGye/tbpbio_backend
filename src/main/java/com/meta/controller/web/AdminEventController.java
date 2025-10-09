@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.meta.dto.EventSaveReqDto;
 import com.meta.entity.EventEntity;
-import com.meta.repository.EventFileRepository;
-import com.meta.repository.EventRepository;
 import com.meta.service.EventService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -25,7 +25,7 @@
 		      </td>
 		      <td th:text="${#dates.format(item.regAt, 'yyyy-MM-dd HH:mm:ss')}">2025-12-12 00-00-00</td>
 		      <td>
-				<button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" th:onclick="goDetail([[${item.id}]]);">
+				<button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" th:onclick="goDetail([[${item.id}]]);">
 				  상세보기
 				</button>
 		      </td>
@@ -45,10 +45,10 @@
 	      </div>
 
 	      <div class="mx-2">제목</div>
-	      <div class="modal-body border border-secondary rounded-2 m-2 p-2" id="title">
+	      <div class="modal-body border border-secondary rounded-0 m-2 p-2" id="title" style="min-height: 52px;">
 	      </div>
 	      <div class="mx-2">내용</div>
-	      <div class="modal-body border border-secondary rounded-2 m-2 p-2" id="con">
+	      <div class="modal-body border border-secondary rounded-0 m-2 p-2" id="con">
 			<p>데이타가 존재하지 않습니다.</p>
 	      </div>
 	      <div class="mx-2">

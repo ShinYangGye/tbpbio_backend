@@ -82,6 +82,22 @@ public class MenuService {
 	}
 	
 	/**
+	* 메인메뉴 정보 조회
+	*/
+	public MenuMainEntity getMenuMainInfo(Long mainId) {							
+		MenuMainEntity result = menuMainRepository.findById(mainId).get();		
+		return result;		
+	}
+	
+	/**
+	* 서브메뉴 정보 조회
+	*/
+	public MenuSubEntity getMenuSubInfo(Long subId) {							
+		MenuSubEntity result = menuSubRepository.findById(subId).get();		
+		return result;		
+	}
+	
+	/**
 	* 서브메뉴등록 저장
 	*/
 	@Transactional

@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head th:fragment="comm-head">
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -16,7 +16,7 @@
 
 <nav class="navbar navbar-expand bg-dark border-bottom border-body" data-bs-theme="dark" th:fragment="navbar">	
   <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/admin}">관리자</a>
+    <a class="navbar-brand" th:href="@{/admin/index}">관리자</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -29,7 +29,7 @@
           <a class="nav-link active" th:href="@{/admin/product/list}">제품관리</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" th:href="@{/admin/brand/list?brand=ALL}">제휴브랜드관리</a>
+          <a class="nav-link active" th:href="@{/admin/brand/list?brand=ALL}">취급브랜드관리</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" th:href="@{/admin/event/list}">이벤트관리</a>
@@ -37,8 +37,14 @@
        	<li class="nav-item">
           <a class="nav-link active" th:href="@{/admin/price/list}">견적의뢰관리</a>
         </li>
-
-
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/admin/banner/list}">배너관리</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active pt-0" th:href="@{/admin/banner/list}">
+          	<a th:href="@{/logout}" class="btn btn-sm btn-secondary">관리자 로그아웃</a>
+          </a>
+        </li>
       </ul>
 
     </div>

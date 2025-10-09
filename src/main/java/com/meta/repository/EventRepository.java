@@ -9,4 +9,6 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
 	
 	List<EventEntity> findByOrderByIdDesc();
 	
+	List<EventEntity> findTop3ByOrderByIdDesc();
+	
 }

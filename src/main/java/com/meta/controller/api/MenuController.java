@@ -2,10 +2,8 @@ package com.meta.controller.api;
 
 import java.net.MalformedURLException;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.meta.dto.MenuSubSaveReqDto;
 import com.meta.dto.ResponseMessageDto;
 import com.meta.entity.MenuMainEntity;
+import com.meta.entity.MenuSubEntity;
 import com.meta.service.MenuService;
 import com.meta.service.ResponseMessageService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +41,20 @@ public class MenuController {
 	@GetMapping("/menu/list")
 	public List<MenuMainEntity> getMenuList() {
 		List<MenuMainEntity> items = menuService.getMenuMainList();
+		return items;
+	}
+	
+	//  메인 메뉴 정보 조회
+	@GetMapping("/menu/main/{mainId}")
+	public MenuMainEntity getMenuMainInfo(@PathVariable("mainId") Long mainId) {
+		MenuMainEntity items = menuService.getMenuMainInfo(mainId);
+		return items;
+	}
+	
+	// 서브 메뉴 정보 조회
+	@GetMapping("/menu/sub/{subId}")
+	public MenuSubEntity getMenuSubInfo(@PathVariable("subId") Long subId) {
+		MenuSubEntity items = menuService.getMenuSubInfo(subId);
 		return items;
 	}
 	

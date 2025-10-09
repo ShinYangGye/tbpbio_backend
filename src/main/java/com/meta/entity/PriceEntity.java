@@ -55,8 +55,5 @@ public class PriceEntity  {
 	@Column(name="reg_at", nullable=false)
 	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")	
 	private Date regAt;
-	
-	@Column(name="menu_sub_id", nullable=false)
-	private Long menuSubId;
 
 }

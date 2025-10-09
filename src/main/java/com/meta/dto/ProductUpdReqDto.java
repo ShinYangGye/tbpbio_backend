@@ -24,4 +24,6 @@ public class ProductUpdReqDto {
 	private List<MultipartFile> productDocs;
 	
 	private List<ProductFileEntity> files;
+	
+	private String upd;
 }

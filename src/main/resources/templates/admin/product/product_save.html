@@ -47,25 +47,29 @@
 					      <textarea class="form-control" th:field="*{productContents}" rows="4"></textarea>
 					    </div>				      				      
 				    </div>
-				  </div>  		
-				  <fieldset class="row mb-3">
-				    <label for="productDocs" class="col-sm-2 col-form-label">제품 자료</label>
-				    <div class="col-sm-10">
-						<input class="form-control" type="file" multiple="multiple" th:field="*{productDocs}" >
-				    </div>
-				  </fieldset>
+				  </div>  	
 				  <fieldset class="row mb-3">
 				    <label for="mainImg" class="col-sm-2 col-form-label">제품 대표 이미지</label>
 				    <div class="col-sm-10">
 						<input class="form-control" type="file" accept="image/*" th:field="*{mainImg}" >
 				    </div>
 				  </fieldset>		
+				  
 				  <fieldset class="row mb-3">
 				    <label for="subImg" class="col-sm-2 col-form-label">제품 기타 이미지</label>
 				    <div class="col-sm-10">
 						<input class="form-control" type="file" multiple="multiple" accept="image/*" th:field="*{subImg}" >
 				    </div>
+				  </fieldset>				  
+				  		  	
+				  <fieldset class="row mb-3">
+				    <label for="productDocs" class="col-sm-2 col-form-label">제품 자료</label>
+				    <div class="col-sm-10">
+						<input class="form-control" type="file" multiple="multiple" th:field="*{productDocs}" >
+				    </div>
 				  </fieldset>
+		
+
 				  <fieldset class="row mb-3">
 				    <label for="productUseImg" class="col-sm-2 col-form-label">제품특징 이미지</label>
 				    <div class="col-sm-10">

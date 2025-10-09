@@ -85,6 +85,17 @@ public class EventService {
 	}
 	
 	/**
+	* 이벤트 목록 조회
+	*/
+	public List<EventEntity> getEventTop() {				
+		
+		// List<EventEntity> result = eventRepository.findAll();		
+		List<EventEntity> result = eventRepository.findTop3ByOrderByIdDesc();
+		
+		return result;		
+	}
+	
+	/**
 	* 이벤트 삭제
 	*/
 	@Transactional

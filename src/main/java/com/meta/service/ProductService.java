@@ -20,12 +20,14 @@ import com.meta.dto.PriceSaveReqDto;
 import com.meta.dto.ProductSaveReqDto;
 import com.meta.dto.ProductUpdReqDto;
 import com.meta.dto.UploadFile;
+import com.meta.entity.BannerEntity;
 import com.meta.entity.BrandEntity;
 import com.meta.entity.BrandFileEntity;
 import com.meta.entity.EventEntity;
 import com.meta.entity.EventFileEntity;
 import com.meta.entity.ProductEntity;
 import com.meta.entity.ProductFileEntity;
+import com.meta.repository.BannerRepository;
 import com.meta.repository.BrandFileRepository;
 import com.meta.repository.BrandRepository;
 import com.meta.repository.ProductFileRepository;
@@ -46,6 +48,8 @@ public class ProductService {
 	private final FileStore fileStore;	
 	private final ProductRepository productRepository;
 	private final ProductFileRepository productFileRepository;
+	
+	private final BannerRepository bannerRepository;
 	
 	/**
 	* 상품 등록 저장
@@ -197,12 +201,24 @@ public class ProductService {
 			} else {
 				if (subId == null) {
 					result = productRepository.findByMenuMainIdOrderByIdDesc(mainId);
+				} else {
+					result = productRepository.findByMenuSubIdOrderByIdDesc(subId);
 				}
 			}
 		}
 		
 		return result;		
 	}
+	
+	/**
+	* 상품 4개 목록 조회
+	*/
+	public List<ProductEntity> getProductTop4() {				
+		
+		List<ProductEntity> result = productRepository.findTop4ByOrderByIdDesc();	
+		return result;		
+	}
+	
 	
 	/**
 	* 상품 단건 조회
@@ -395,6 +411,16 @@ public class ProductService {
 	// 상품 삭제
 	@Transactional
 	public void deleteProduct(Long productId) {		
+		
+		int bannerSize = bannerRepository.findByProductId(productId).size();
+				
+		if (bannerSize > 0) {
+			for (int i=0;i<bannerSize;i++) {
+				BannerEntity bannerEntity = bannerRepository.findByProductId(productId).get(i);
+				bannerRepository.delete(bannerEntity);
+			}
+		}
+
 		productRepository.deleteById(productId);
 		productFileRepository.deleteByProductId(productId);
 	}

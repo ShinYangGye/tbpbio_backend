@@ -3,11 +3,9 @@ package com.meta.controller.web;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
-
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,16 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.meta.dto.BrandSaveReqDto;
-import com.meta.dto.MenuMainSaveReqDto;
 import com.meta.dto.ProductSaveReqDto;
 import com.meta.dto.ProductUpdReqDto;
 import com.meta.entity.MenuMainEntity;
 import com.meta.entity.ProductEntity;
 import com.meta.service.MenuService;
 import com.meta.service.ProductService;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,13 +79,16 @@ public class AdminProductController {
 			@RequestParam(name="mainId", defaultValue = "0") Long mainId, 
 			@RequestParam(name="subId", defaultValue = "0") Long subId, 
 			@RequestParam(name="productId") Long productId,  
+			@RequestParam(name="upd", defaultValue = "R") String upd,  
 			Model model) {			
 		
 		if (mainId == 0) mainId = null;		
 		if (subId == 0) subId = null;
 		
 		ProductUpdReqDto item = productService.getProduct(mainId, subId, productId);
-		model.addAttribute("item", item);					
+		
+		item.setUpd(upd);
+		model.addAttribute("item", item);			
 		return "admin/product/product_upd";
 	}
 	
@@ -99,14 +96,17 @@ public class AdminProductController {
 	@PostMapping("/product/upd")
 	public String updProduct(@ModelAttribute ProductUpdReqDto reqData, RedirectAttributes redirectAttributes) throws IllegalStateException, IOException {				
 		productService.updProduct(reqData);				
-		return "redirect:/admin/product/upd?productId="+reqData.getProductId();		
+		return "redirect:/admin/product/upd?productId="+reqData.getProductId()+"&upd=U";		
 		// return "redirect:/admin/product/list";
 	}
 	
 	// 상품 삭제
 	@GetMapping("/product/delete")
-	public String deleteProduct(@RequestParam(name="productId") Long productId, 
-			@RequestParam(name="mainId") Long mainId, @RequestParam(name="subId") Long subId) {		
+	public String deleteProduct(
+			@RequestParam(name="productId", defaultValue = "0") Long productId, 
+			@RequestParam(name="mainId", defaultValue = "0") Long mainId, 
+			@RequestParam(name="subId", defaultValue = "0") Long subId) {	
+		
 		productService.deleteProduct(productId);				
 		return "redirect:/admin/product/list?mainId="+mainId+"&subId="+subId;
 	}
