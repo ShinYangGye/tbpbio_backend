@@ -47,4 +47,8 @@ public class EventEntity {
 	@OneToOne
 	@JoinColumn(name = "file_id")
 	EventFileEntity file;
+	
+	@OneToOne
+	@JoinColumn(name = "img_id")
+	EventFileEntity imgFile;
 }

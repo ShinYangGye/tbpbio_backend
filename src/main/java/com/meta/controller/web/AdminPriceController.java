@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.meta.entity.PriceEntity;
 import com.meta.service.PriceService;
@@ -27,5 +28,12 @@ public class AdminPriceController {
 		
 		return "admin/price/price_list";
 	}	
+	
+	// 브랜드 삭제
+	@GetMapping("/price/{priceId}/delete")
+	public String deletePrice(@PathVariable("priceId") Long priceId) {
+		priceService.deletePrice(priceId);				
+		return "redirect:/admin/price/list";
+	}
 	
 }

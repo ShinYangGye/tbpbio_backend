@@ -11,6 +11,6 @@ public class EventSaveReqDto {
 	private String title;
 	private String contents;
 	private MultipartFile attachFile;
-	private List<MultipartFile> imageFiles;
+	private MultipartFile imgFile;
 	
 }

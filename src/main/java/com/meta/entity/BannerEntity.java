@@ -33,7 +33,7 @@ public class BannerEntity {
 	@Column(unique=true, nullable=false)
 	private Long id;
 	
-	@Column(name="banner_name", nullable=false, length=200)
+	@Column(name="banner_name", nullable=true, length=200)
 	private String bannerName;
 	
 	@Column(name="product_id", nullable=false)

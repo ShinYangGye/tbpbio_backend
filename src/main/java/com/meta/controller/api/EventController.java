@@ -35,6 +35,13 @@ public class EventController {
 		return result;
 	}
 	
+	// 이벤트 목록
+	@GetMapping({"/event/{eventId}/detail"})
+	public EventEntity getEvent(@PathVariable("eventId") Long eventId) {				
+		EventEntity result = eventService.getEvent(eventId);				
+		return result;
+	}
+	
 	// 이벤트 파일 다운로드
 	@GetMapping("/event/attach/{eventId}")
 	public ResponseEntity<Resource> downloadAttach(@PathVariable("eventId") Long eventId) throws MalformedURLException {

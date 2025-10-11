@@ -18,11 +18,13 @@ import com.meta.entity.BannerEntity;
 import com.meta.entity.BannerFileEntity;
 import com.meta.entity.BrandEntity;
 import com.meta.entity.BrandFileEntity;
+import com.meta.entity.EventEntity;
 import com.meta.entity.ProductEntity;
 import com.meta.repository.BannerFileRepository;
 import com.meta.repository.BannerRepository;
 import com.meta.repository.BrandFileRepository;
 import com.meta.repository.BrandRepository;
+import com.meta.repository.EventRepository;
 import com.meta.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +44,7 @@ public class BannerService {
 	private final BannerFileRepository bannerFileRepository;
 	
 	private final ProductRepository productRepository;
+	private final EventRepository eventRepository;
 	
 	/**
 	* 배너 등록 저장
@@ -70,24 +73,47 @@ public class BannerService {
 			
 		}
 		
-		ProductEntity productEntity = productRepository.findById(reqData.getProductId()).get();
 		
-		if (productEntity == null) {
-			log.error("해당 제품이 존재하지 않습니다.");
-			return;
+		if ("product".equals(reqData.getType())) {
+			ProductEntity productEntity = productRepository.findById(reqData.getProductId()).get();
+			
+			if (productEntity == null) {
+				log.error("해당 제품이 존재하지 않습니다.");
+				return;
+			}
+			
+			BannerEntity bannerEntity = BannerEntity.builder()
+					.bannerName(reqData.getBannerName())
+					.productId(reqData.getProductId())
+					.productName(productEntity.getProductName())
+					.menuMainId(productEntity.getMenuMainId())
+					.menuSubId(productEntity.getMenuSubId())
+					.type(reqData.getType())
+					.file(bannerFileEntity)
+					.build();
+			bannerRepository.save(bannerEntity);
+		} else if ("event".equals(reqData.getType())) {
+			
+			EventEntity eventEntity = eventRepository.findById(reqData.getProductId()).get();
+			
+			if (eventEntity == null) {
+				log.error("해당 이벤트가 존재하지 않습니다.");
+				return;
+			}
+			
+			BannerEntity bannerEntity = BannerEntity.builder()
+					.bannerName(reqData.getBannerName())
+					.productId(reqData.getProductId())
+					.productName(eventEntity.getTitle())
+					.menuMainId(0L)
+					.menuSubId(0L)
+					.type(reqData.getType())
+					.file(bannerFileEntity)
+					.build();
+			bannerRepository.save(bannerEntity);
+			
 		}
 		
-		BannerEntity bannerEntity = BannerEntity.builder()
-				.bannerName(reqData.getBannerName())
-				.productId(reqData.getProductId())
-				.productName(productEntity.getProductName())
-				.menuMainId(productEntity.getMenuMainId())
-				.menuSubId(productEntity.getMenuSubId())
-				.type(reqData.getType())
-				.file(bannerFileEntity)
-				.build();
-		
-		bannerRepository.save(bannerEntity);
 		
 	}
 

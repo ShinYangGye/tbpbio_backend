@@ -55,6 +55,7 @@
 	      	<p>이름 : <sapn id="name">홍길동</sapn> | 휴대폰 : <sapn id="mobile">01011112222</sapn> | 이메일 : <sapn id="email">test@gmail.com</sapn> | 요청일시 : <sapn id="reg_at">2025-12-12 00:00:00</sapn></p>
 	      </div>
 	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" th:onclick="goDelete();">삭제하기</button>
 	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 	      </div>
 	    </div>
@@ -68,6 +69,8 @@
     
     <script th:inline="javascript">
     
+    	let priceId = null;
+    
     	let titleElement = document.getElementById('title');
     	let conElement = document.getElementById('con');  	
     	let nameElement = document.getElementById('name');
@@ -77,6 +80,8 @@
     
     	// 상세보기
     	let goDetail = function(id) {
+    	
+    		priceId = id;
     				    	
 	    	axios
 	    		.get('/api/admin/price/'+ id +'/detail')
@@ -96,6 +101,14 @@
 	    		.catch(err => {
 	    			console.log(err);
 	    		})    		    		
+    	}
+    	
+    	    	// 삭제
+    	let goDelete = function() { 		
+    		let conf = confirm("해당 견적의뢰를 삭제합니까?");  		
+    		if (conf) {
+    			location.href = "/admin/price/"+ priceId +"/delete";
+    		} 		  		
     	}
     	
     </script>
