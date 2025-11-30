@@ -40,10 +40,15 @@
         <li class="nav-item">
           <a class="nav-link active" th:href="@{/admin/banner/list}">배너관리</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
           <a class="nav-link active pt-0" th:href="@{/admin/banner/list}">
           	<a th:href="@{/logout}" class="btn btn-sm btn-secondary">관리자 로그아웃</a>
           </a>
+          
+          <!-- 
+          <div  style="color: white;">사용자 권한 : <span th:text=${#authentication.principal.user.role}></span></div>
+           -->        
+		        
         </li>
       </ul>
 

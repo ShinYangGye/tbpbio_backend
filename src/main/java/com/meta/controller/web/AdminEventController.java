@@ -34,8 +34,17 @@ public class AdminEventController {
 		EventSaveReqDto item = new EventSaveReqDto();
 		model.addAttribute("item", item);
 		
+		// 전체목록
 		List<EventEntity> items = eventService.getEventList();		
 		model.addAttribute("items", items);
+		
+		//진행중 목록
+		List<EventEntity> ingItems = eventService.getEventStatusList("I");		
+		model.addAttribute("ingItems", ingItems);
+		
+		//종료 목록
+		List<EventEntity> endItems = eventService.getEventStatusList("E");		
+		model.addAttribute("endItems", endItems);
 		
 		return "admin/event/event_list";
 	}
@@ -51,6 +60,13 @@ public class AdminEventController {
 	@GetMapping("/event/{eventId}/delete")
 	public String deleteEvent(@PathVariable("eventId") Long eventId) {
 		eventService.deleteEvent(eventId);				
+		return "redirect:/admin/event/list";
+	}
+	
+	// 이벤트 삭제
+	@GetMapping("/event/{eventId}/status/{status}")
+	public String updateStatus(@PathVariable("eventId") Long eventId, @PathVariable("status") String status) {
+		eventService.updateEventStatus(eventId, status);				
 		return "redirect:/admin/event/list";
 	}
 	

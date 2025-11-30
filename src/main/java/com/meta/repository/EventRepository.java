@@ -11,4 +11,8 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
 	
 	List<EventEntity> findTop3ByOrderByIdDesc();
 	
+	List<EventEntity> findByStatusIsOrStatusIsOrderByIdDesc(String statusI, String statusE);
+	
+	List<EventEntity> findByStatusIsOrderByIdDesc(String status);
+	
 }

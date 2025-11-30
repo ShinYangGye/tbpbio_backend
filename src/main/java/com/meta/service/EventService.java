@@ -57,6 +57,7 @@ public class EventService {
 		
 		EventFileEntity eventFileEntity = null;
 		EventFileEntity eventImgFileEntity = null;
+		EventFileEntity eventImgListFileEntity = null;
 		
 		if (uploadAttachFile != null) {
 			
@@ -88,12 +89,30 @@ public class EventService {
 			eventFileRepository.save(eventImgFileEntity);
 		}
 		
+		// 목록 이미지저장
+		MultipartFile imgListFile = reqData.getImgListFile();
+		UploadFile uploadImgListFile = fileStore.storeFile(imgListFile, eventFileDir);
+		if (uploadImgListFile != null) {
+			String orgFileName =  uploadImgListFile.getUploadFilename();
+			String savedFileName = uploadImgListFile.getStoreFileName();
+			
+			eventImgListFileEntity = EventFileEntity.builder()
+					.orgFileName(orgFileName)
+					.savedFileName(savedFileName)
+					.savedFilePath(eventFileDir + savedFileName)
+					.build();
+			eventFileRepository.save(eventImgListFileEntity);
+		}
+		
 		// 이벤트 저장
 		EventEntity eventEntity = EventEntity.builder()
 				.title(reqData.getTitle())
+				.summary(reqData.getSummary())
+				.status("I")
 				.contents(reqData.getContents())
 				.file(eventFileEntity)
 				.imgFile(eventImgFileEntity)
+				.listImgFile(eventImgListFileEntity)
 				.build();
 		
 		eventRepository.save(eventEntity);
@@ -107,7 +126,20 @@ public class EventService {
 	public List<EventEntity> getEventList() {				
 		
 		// List<EventEntity> result = eventRepository.findAll();		
-		List<EventEntity> result = eventRepository.findByOrderByIdDesc();
+		// List<EventEntity> result = eventRepository.findByOrderByIdDesc();
+		List<EventEntity> result = eventRepository.findByStatusIsOrStatusIsOrderByIdDesc("I", "E");
+		
+		return result;		
+	}
+	
+	/**
+	* 이벤트 목록 조회
+	*/
+	public List<EventEntity> getEventStatusList(String status) {				
+		
+		// List<EventEntity> result = eventRepository.findAll();		
+		// List<EventEntity> result = eventRepository.findByOrderByIdDesc();
+		List<EventEntity> result = eventRepository.findByStatusIsOrderByIdDesc(status);
 		
 		return result;		
 	}
@@ -163,6 +195,16 @@ public class EventService {
 		
 		eventRepository.deleteById(eventId);
 		
+	}
+	
+	/**
+	* 이벤트 상태 변경
+	*/
+	@Transactional
+	public void updateEventStatus(Long eventId, String status) {
+		
+		EventEntity eventEntity = eventRepository.findById(eventId).get();
+		eventEntity.setStatus(status);
 	}
 	
 	// 이벤트 파일 다운로드

@@ -9,8 +9,10 @@ public class EventSaveReqDto {
 
 	private Long id;
 	private String title;
+	private String summary;
 	private String contents;
 	private MultipartFile attachFile;
 	private MultipartFile imgFile;
+	private MultipartFile imgListFile;
 	
 }

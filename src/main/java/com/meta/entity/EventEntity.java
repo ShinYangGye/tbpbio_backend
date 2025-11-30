@@ -36,6 +36,12 @@ public class EventEntity {
 	@Column(nullable=false, length=100)
 	private String title;
 	
+	@Column(nullable=false, length=100)
+	private String summary;
+	
+	@Column(nullable=false, length=1)
+	private String status;
+	
 	@Column(columnDefinition = "LONGTEXT")
 	private String contents;
 	
@@ -51,4 +57,8 @@ public class EventEntity {
 	@OneToOne
 	@JoinColumn(name = "img_id")
 	EventFileEntity imgFile;
+	
+	@OneToOne
+	@JoinColumn(name = "list_img_id")
+	EventFileEntity listImgFile;
 }

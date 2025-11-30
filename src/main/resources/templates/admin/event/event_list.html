@@ -21,6 +21,12 @@
 		    </div>
 		  </div>
 		  <div class="row mb-3">
+		    <label for="title" class="col-sm-2 col-form-label">요약</label>
+		    <div class="col-sm-10">
+		      <input type="text" maxlength=100 class="form-control" th:field="*{summary}">
+		    </div>
+		  </div>
+		  <div class="row mb-3">
 		    <label for="contents" class="col-sm-2 col-form-label">내용</label>
 		    <div class="col-sm-10">
 		      <textarea class="form-control" th:field="*{contents}" rows="7"></textarea>
@@ -34,9 +40,16 @@
 		  </fieldset>
 		  
 		  <fieldset class="row mb-3">
-		    <label for="attachFile" class="col-sm-2 col-form-label">이벤트 이미지</label>
+		    <label for="imgFile" class="col-sm-2 col-form-label">이벤트 이미지</label>
 		    <div class="col-sm-10">
 				<input class="form-control" type="file" th:field="*{imgFile}" accept="image/*" >
+		    </div>
+		  </fieldset>
+		  
+		  <fieldset class="row mb-3">
+		    <label for="imgListFile" class="col-sm-2 col-form-label">이벤트 목록 이미지</label>
+		    <div class="col-sm-10">
+				<input class="form-control" type="file" th:field="*{imgListFile}" accept="image/*" >
 		    </div>
 		  </fieldset>
 		
@@ -57,7 +70,7 @@
 		    <h2 class="accordion-header">
 		      <button class="accordion-button collapsed text-bg-secondary" type="button" data-bs-toggle="collapse" th:attr="data-bs-target=|#flush-collapse-${item.id}|, aria-controls=|#flush-collapse-${item.id}|"  aria-expanded="false">
 		       	<div>
-		       	<span th:text="${item.title}"></span>       	
+		       	<span th:text="${item.title}"></span>     		       	  	
 		       	</div>
 		      </button>
 		    </h2>
@@ -66,7 +79,14 @@
 		      	<div>
 
 		      	<div class="m-2"><strong><span>이벤트 관리번호 : </span><span th:text="${item.id}"></span></strong></div>
-
+				<div>
+					이벤트 상태 : 
+										
+                	<span class="badge text-bg-danger" style="width: 100px; font-size: 14px; padding: 8px;" th:if="${item.status == 'I'}">진행중</span>
+                	<span class="badge text-bg-secondary" style="width: 100px; font-size: 14px; padding: 8px;" th:if="${item.status == 'E'}">종료</span>				
+										
+					<button class="btn btn btn-sm btn-danger" style="margin-bottom: 5px;" th:onclick="goStatus([[${item.id}]], 'I');">진행상태로 변경</button>
+					<button class="btn btn btn-sm btn-secondary"  style="margin-bottom: 5px;" th:onclick="goStatus([[${item.id}]], 'E');">종료상태로 변경</button></div>
 		      	<textarea class="form-control" rows="7" readonly th:text="${item.contents}"></textarea>
 		      	</div>
 		      	<hr />
@@ -105,6 +125,8 @@
 			
 			let title = document.getElementById('title').value;
 			let contents = document.getElementById('contents').value;
+			let summary = document.getElementById('summary').value;
+			let imgListFile = document.getElementById('imgListFile').value;
 			
 			if (title.trim() == '') {
 				alert("제목을 입력하세요.");
@@ -112,9 +134,21 @@
 				return false;
 			}
 			
+			if (summary.trim() == '') {
+				alert("요약을 입력하세요.");
+				document.getElementById('summary').focus();
+				return false;
+			}
+			
 			if (contents.trim() == '') {
 				alert("내용을 입력하세요.");
 				document.getElementById('contents').focus();
+				return false;
+			}
+			
+			if (imgListFile.trim() == '') {
+				alert("이벤트 목록 이미지를 선택하세요.");
+				document.getElementById('imgListFile').focus();
 				return false;
 			}
 			
@@ -131,6 +165,11 @@
     			location.href = "/admin/event/"+ id +"/delete";
     		}
     		  		
+    	}
+    	
+    	// 상태변경
+    	let goStatus = function(id, status) {  		
+			location.href = "/admin/event/"+ id +"/status/" + status;   		  		
     	}
     
     </script>
