@@ -117,6 +117,41 @@ public class AdminProductController {
 	public Resource downloadImage(@PathVariable("filename") String filename) throws MalformedURLException {		
 		return productService.downloadImage(filename);
 	}
+	
+	// 메인화면상품 목록
+	@GetMapping({"/product-main/list"})
+	public String getProductMainList(@RequestParam(name="cate_code", defaultValue = "") String cate_code , Model model) {		
+		
+		if ("".equals(cate_code)) cate_code = null;		
+		
+		// 상품 조회
+		List<ProductEntity> prds = productService.getProductMainList(cate_code);		
+		model.addAttribute("cate_code", cate_code);
+		model.addAttribute("prds", prds);
+		
+		return "admin/product/product_main_list";
+	}
+	
+	// 상품 등록 저장
+	@GetMapping("/product-main/save")
+	public String saveProductMain(@RequestParam(name="productId", defaultValue = "0") Long productId, @RequestParam(name="cate_code", defaultValue = "") String categoryCode
+			, @RequestParam(name="mode", defaultValue = "") String mode
+			, RedirectAttributes redirectAttributes) {		
+		
+		String nCateCode = "";
+		
+		if ("D".equals(mode)) {
+			nCateCode = null;
+		} else {
+			nCateCode = categoryCode;
+		}
+		
+		// if (categoryCode == "") categoryCode = null;		
+		
+		productService.saveProductMain(nCateCode, productId);
+		
+		return "redirect:/admin/product-main/list?cate_code="+categoryCode;
+	}
 }
 
 

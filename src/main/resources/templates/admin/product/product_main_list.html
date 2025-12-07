@@ -1,0 +1,152 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/comm :: comm-head}">
+  
+  </head>
+  <body>
+  
+	 <nav th:replace="~{fragments/comm :: navbar}"></nav>
+ 
+	 <div class="container my-2">
+	    
+	    <h4>메인페이지 제품관리</h4>
+		
+		<hr />
+		
+		<!-- 메뉴 선택 ----------------------------------->	    
+		<div class="row">
+		<div class="col col-2 text-end">메인페이지 카네고리</div>
+		  <div class="col col-4">
+			<select id="cate_code" class="form-select">
+				<option value="">전체보기</option>
+				<option value="A">신제품</option>
+				<option value="B">기초장비</option>
+				<option value="C">BioScience</option>
+				<option value="D">Genomics</option>
+				<option value="E">Cellomics</option>
+			</select>      	
+			 
+		  </div>
+		  <div class="col  col-1">
+		    <button type="button" class="btn btn-secondary" onclick="goList();">조회</button>
+		  </div>
+	    	<div class="col">
+	    	
+	    	<div class="input-group mb-3">
+			  <input id="productId" type="number" class="form-control" placeholder="제품관리번호" aria-label="Recipient’s username" aria-describedby="button-addon2">
+			  <button class="btn btn-secondary" type="button" id="button-addon2"  th:onclick="saveProductMain();">메인페이지 제품등록</button>
+			</div> 	
+	    	
+	    	</div>
+		</div>
+		<!-- // 메뉴 선택 ----------------------------------->		
+		
+		<hr />
+		
+		<!-- 상품 목록 ----------------------------------->
+		<div class="row row-cols-1 row-cols-md-4 g-2">
+		  <div class="col" th:each="prd, prdStat : ${prds}">
+		    <div class="card h-100">
+		    <div th:each="file : ${prd.files}">
+		      <img th:src="@{|/admin/product/image/${file.savedFileName}|}" height="200" class="card-img-top" th:if="${file.kind} == 'main'">
+		    </div>  
+		      <div class="card-body">
+		        <h5 class="card-title" tH:text="${prd.productName}">상품명</h5>
+		        <p class="card-text" tH:text="${prd.productBrand}">상품브랜드</p>
+		      </div>
+		      <div class="card-footer text-end">		        
+		        <button type="button" class="btn btn-secondary"  th:onclick="goUpdForm([[ ${prd} ]]);">상세보기</button>
+		        <button type="button" class="btn btn-secondary"  th:onclick="deleteProductMain([[ ${prd} ]]);">등록취소</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- // 상품 목록 ----------------------------------->	
+	</div>
+
+    <script th:replace="~{fragments/comm :: bottom-script}"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script th:inline="javascript">
+    	
+    	window.onload = function() {
+    		let cateCode = /*[[${param.cate_code}]]*/;
+    		
+    		let category = document.getElementById('cate_code');	
+			category.querySelector("option[value='"+ cateCode +"']").selected = true;
+    	}
+		
+		// 목록 조회
+		let goList = function() {
+			let category = document.getElementById('cate_code');			
+			let categoryCode = category.options[category.selectedIndex].value
+			location.href = "/admin/product-main/list?cate_code=" + categoryCode;
+		}
+		
+		// 상세보기 화면으로 이동
+		let goUpdForm = function(prd) {	
+			
+			let mainId = prd.menuMainId;
+			let subId = prd.menuSubId;
+			let prdId = prd.id;
+			
+			location.href = "/admin/product/upd?mainId=" + mainId + "&subId="+subId+"&productId=" + prdId;
+
+		}
+		
+		// 등록
+		let saveProductMain = function() {
+			
+			let category = document.getElementById('cate_code');			
+			let categoryCode = category.options[category.selectedIndex].value;
+			
+			let productId = document.getElementById('productId').value;
+
+			if (categoryCode == "") {
+				alert("메인페이지 카테고리를 선택하새요.");
+				category.focus();
+				return;
+			}
+			
+			if (productId == "") {
+				alert("제품관리번호를 입력하세요.");
+				document.getElementById('productId').focus();
+				return;
+			}			
+
+	    	axios
+    		.get('/api/product/detail/'+ productId)
+    		.then(res => {    			    		
+    			location.href = "/admin/product-main/save?cate_code=" + categoryCode +"&productId=" + productId + "&mode=S";
+    		})
+    		.catch(err => {
+    			alert("제품관리번호가 존재하지 않거나 등록시 오류가 발생했습니다.\n확인 후 다시 시도해 주세요.");
+    			return;
+    		})		
+						
+		}
+		
+		// 등록취소
+		let deleteProductMain = function(prd) {
+				
+			let category = document.getElementById('cate_code');			
+			let categoryCode = category.options[category.selectedIndex].value;		
+			let productId = prd.id;
+			
+	    	axios
+    		.get('/api/product/detail/'+ productId)
+    		.then(res => {    			    		
+    			location.href = "/admin/product-main/save?cate_code=" + categoryCode +"&productId=" + productId + "&mode=D";
+    		})
+    		.catch(err => {
+    			alert("제품관리번호가 존재하지 않거나 취소시 오류가 발생했습니다.\n확인 후 다시 시도해 주세요.");
+    			return;
+    		})		
+						
+		}
+				    	
+    </script>
+  
+  </body>
+</html>

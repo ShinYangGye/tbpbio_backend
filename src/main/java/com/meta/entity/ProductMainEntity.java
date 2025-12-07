@@ -1,5 +1,6 @@
 package com.meta.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,40 +32,21 @@ import lombok.NoArgsConstructor;
 @DynamicInsert
 @DynamicUpdate
 @Entity
-@Table(name="tbl_product")
-public class ProductEntity {
+@Table(name="tbl_product_main")
+public class ProductMainEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(unique=true, nullable=false)
 	private Long id;
 	
-	@Column(name="product_name", nullable=false, length=500)
-	private String productName;
+	@Column(name="category_code")
+	private int categoryCode;
 	
-	@Column(name="product_use", nullable=false, length=500)
-	private String productUse;
+	@Column(name="sort")
+	private int sort;
 	
-	@Column(name="product_brand", nullable=false, length=500)
-	private String productBrand;
+	@OneToMany(mappedBy="id", fetch=FetchType.EAGER)
+	private List<ProductEntity> products;
 	
-	@Column(name="product_contents", columnDefinition = "LONGTEXT")
-	private String productContents ;
-
-	@Column(name="menu_main_id", nullable=false)
-	private Long menuMainId;
-	
-	@Column(name="menu_sub_id", nullable=false)
-	private Long menuSubId;
-	
-	@CreationTimestamp
-	@Column(name="reg_at", nullable=false)
-	@JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss", timezone="Asia/Seoul")	
-	private Date regAt;
-	
-	@OneToMany(mappedBy="productId", fetch=FetchType.EAGER)
-	private List<ProductFileEntity> files;
-	
-	@Column(name="main_category_code", nullable=true)
-	private String mainCategoryCode;
 }

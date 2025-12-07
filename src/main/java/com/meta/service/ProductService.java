@@ -27,10 +27,12 @@ import com.meta.entity.EventEntity;
 import com.meta.entity.EventFileEntity;
 import com.meta.entity.ProductEntity;
 import com.meta.entity.ProductFileEntity;
+import com.meta.entity.ProductMainEntity;
 import com.meta.repository.BannerRepository;
 import com.meta.repository.BrandFileRepository;
 import com.meta.repository.BrandRepository;
 import com.meta.repository.ProductFileRepository;
+import com.meta.repository.ProductMainRepository;
 import com.meta.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -48,7 +50,7 @@ public class ProductService {
 	private final FileStore fileStore;	
 	private final ProductRepository productRepository;
 	private final ProductFileRepository productFileRepository;
-	
+	private final ProductMainRepository productMainRepository;
 	private final BannerRepository bannerRepository;
 	
 	/**
@@ -199,7 +201,7 @@ public class ProductService {
 			if (mainId != null && subId != null) {
 				result = productRepository.findByMenuMainIdAndMenuSubIdOrderByIdDesc(mainId, subId);
 			} else {
-				if (subId == null) {
+				if (subId == null) {					
 					result = productRepository.findByMenuMainIdOrderByIdDesc(mainId);
 				} else {
 					result = productRepository.findByMenuSubIdOrderByIdDesc(subId);
@@ -237,6 +239,8 @@ public class ProductService {
 			productUpdReqDto.setMenuSubId(subId);
 		}
 		
+		productUpdReqDto.setMenuMainId(result.getMenuMainId());
+		productUpdReqDto.setMenuSubId(result.getMenuSubId());
 		productUpdReqDto.setProductId(productId);
 		productUpdReqDto.setProductName(result.getProductName());
 		productUpdReqDto.setProductUse(result.getProductUse());
@@ -459,6 +463,41 @@ public class ProductService {
 	}
 	
 
+	/**
+	* 상품 4개 목록 조회
+	*/
+	public List<ProductEntity> getProductMain(String code) {						
+		List<ProductEntity> result = productRepository.findByMainCategoryCodeOrderByIdDesc(code);	
+		return result;		
+	}
 	
+	
+	/**
+	* 상품 목록 조회
+	*/
+	public List<ProductEntity> getProductMainList(String cateCode) {				
+		
+		List<ProductEntity> result = null;
+		
+		
+		if (cateCode == null) {
+			
+			String[] arrCode = {"A", "B", "C", "D", "E"};
+			
+			result = productRepository.findByMainCategoryCodeInOrderByIdDesc(arrCode);
+		} else {			
+			result = productRepository.findByMainCategoryCodeOrderByIdDesc(cateCode);			
+		}
+		
+		return result;		
+	}
+	
+	@Transactional
+	public void saveProductMain(String categoryCode, Long productId) {
+		
+		ProductEntity productEntity = productRepository.findById(productId).get();		
+		productEntity.setMainCategoryCode(categoryCode);
+		
+	}
 	
 }

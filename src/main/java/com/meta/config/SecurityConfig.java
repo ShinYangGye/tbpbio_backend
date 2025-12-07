@@ -41,6 +41,7 @@ public class SecurityConfig {
 					"/admin/menu/**"
 					, "/admin/menu/**"
 					, "/admin/product/**"
+					, "/admin/product-main/**"
 					, "/admin/brand/**"
 					, "/admin/event/**"
 					, "/admin/price/**"

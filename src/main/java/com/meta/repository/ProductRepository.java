@@ -27,4 +27,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 	
 	// 메인메뉴, 서브메뉴 상품 조회
 	List<ProductEntity> findByMenuMainIdAndMenuSubIdOrderByIdDesc(Long mainId, Long subId);
+	
+	// 메인메뉴 상품 조회
+	List<ProductEntity> findByMainCategoryCodeOrderByIdDesc(String code);
+	
+	List<ProductEntity> findByMainCategoryCodeInOrderByIdDesc(String[] code);
 }

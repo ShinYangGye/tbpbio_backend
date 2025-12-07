@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.meta.dto.ProductUpdReqDto;
 import com.meta.dto.ResponseMessageDto;
 import com.meta.entity.ProductEntity;
+import com.meta.entity.ProductMainEntity;
 import com.meta.service.ProductService;
 import com.meta.service.ResponseMessageService;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +38,19 @@ public class ProductController {
 	}
 	
 	// 상품 목록
-	@GetMapping({"/product/list/{subId}"})
-	public List<ProductEntity> getProductList(@PathVariable("subId") Long subId) {		
+	@GetMapping({"/product/list/{mainId}/{subId}"})
+	public List<ProductEntity> getProductList(@PathVariable("mainId") Long mainId, @PathVariable("subId") Long subId) {		
+		
+		log.info("subId -------------------- {}", subId);
+		
+		if (subId == 0) {
+			subId = null;
+		}
+		
+		log.info("subId -------------------- {}", subId);
 		
 		// 상품 조회
-		List<ProductEntity> result = productService.getProductList(null, subId);		
+		List<ProductEntity> result = productService.getProductList(mainId, subId);		
 		
 		return result;
 	}
@@ -74,4 +84,13 @@ public class ProductController {
 		return ResponseEntity.ok(responseMessageService.getSuccessResult());
 	}
 	
+	
+	// 메인화면 상품 조회
+	@GetMapping({"/product/list-main/{code}"})
+	public List<ProductEntity> getProductMain(@PathVariable("code") String code) {		
+		
+		// 상품 조회
+		List<ProductEntity> result = productService.getProductMain(code);				
+		return result;
+	}
 }
